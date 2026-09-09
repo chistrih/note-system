@@ -1,7 +1,7 @@
-#include "NoteManager.h"
+#include "ConsoleCRUDHandler.h"
 
 int main() {
-	
-	
-	return 0;
+    ConsoleCRUDHandler app;
+    app.run();
+    return 0;
 }
