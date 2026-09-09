@@ -1,5 +1,6 @@
 #pragma once
 #include "Note.h"
+#include "Colors.h"
 
 class TextNote : public Note {
 private:
@@ -10,11 +11,12 @@ public:
         : Note(id, title, createdAt), textContent(content) {}
 
     void display() const override {
-        std::cout << "\n========================================\n";
-        std::cout << "[Note #" << getId() << "]\nTitle: " << getTitle()
-                  << "\nDate: " << getCreatedAt() << "\n";
-        std::cout << "----------------------------------------\n";
-        std::cout << textContent << "\n========================================\n";
+        std::cout << "\n" << Color::CYAN << "========================================\n" << Color::RESET;
+        std::cout << "[Note #" << Color::CYAN << Color::BOLD << getId() << Color::RESET 
+					<< "]\nTitle: " << Color::CYAN << getTitle() << Color::RESET
+        			<< "\nDate: " << Color::CYAN << getCreatedAt() << Color::RESET << "\n";
+        std::cout << Color::CYAN << "----------------------------------------\n" << Color::RESET; 
+        std::cout << "\n" << textContent << "\n" << Color::CYAN << "\n========================================\n" << Color::RESET << "\n";
     }
 
     void setContent(const std::string& newContent) override { textContent = newContent; }
