@@ -1,45 +1,39 @@
 #pragma once
 #include "Note.h"
 #include <vector>
+#include <memory>
 #include <algorithm>
 
 class NoteManager {
 private:
-    std::vector<Note*> notes;
+    // Upgraded to smart pointers for automatic memory safety
+    std::vector<std::unique_ptr<Note>> notes;
 
 public:
-    ~NoteManager() {
-        for (auto* note : notes) {
-            delete note;
-        }
-        notes.clear();
-    }
+    // No manual destructor needed anymore!
 
-    // CREATE Operation
-    void addNote(Note* note) {
-        notes.push_back(note);
+    void addNote(std::unique_ptr<Note> note) {
+        notes.push_back(std::move(note));
         std::cout << "Note added successfully!\n";
     }
 
-    // READ Operations
     void displayAllNotes() const {
         if (notes.empty()) {
             std::cout << "No notes found.\n";
             return;
         }
-        for (const auto* note : notes) {
+        for (const auto& note : notes) {
             note->display();
         }
     }
 
     Note* findNoteById(const std::string& id) const {
-        for (auto* note : notes) {
-            if (note->getId() == id) return note;
+        for (const auto& note : notes) {
+            if (note->getId() == id) return note.get();
         }
         return nullptr;
     }
 
-    // UPDATE Operation
     bool updateNoteTitle(const std::string& id, const std::string& newTitle) {
         Note* note = findNoteById(id);
         if (note != nullptr) {
@@ -49,20 +43,15 @@ public:
         return false;
     }
 
-    // DELETE Operation
     bool deleteNote(const std::string& id) {
-        auto it = std::remove_if(notes.begin(), notes.end(), [&id](Note* note) {
-            if (note->getId() == id) {
-                delete note; // Free dynamically allocated memory
-                return true;
-            }
-            return false;
-        });
+        auto initialSize = notes.size();
+        
+        // The erase-remove idiom natively handles memory deletion with unique_ptr
+        notes.erase(std::remove_if(notes.begin(), notes.end(),
+            [&id](const std::unique_ptr<Note>& note) {
+                return note->getId() == id;
+            }), notes.end());
 
-        if (it != notes.end()) {
-            notes.erase(it, notes.end());
-            return true;
-        }
-        return false;
+        return notes.size() < initialSize;
     }
 };

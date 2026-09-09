@@ -3,15 +3,39 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <limits>
 #include "NoteManager.h"
-#include "Note.h"
+#include "TextNote.h"
 
 class ConsoleCRUDHandler {
 private:
     NoteManager manager;
 
 public:
-    // CREATE Handler
+    void run() {
+        bool running = true;
+        while (running) {
+            std::cout << "\n--- CLI Note System ---\n";
+            std::cout << "1. Create Note\n2. Read All Notes\n3. Update Note Title\n4. Delete Note\n5. Exit\n";
+            std::cout << "Select an option: ";
+            
+            int choice;
+            if (!(std::cin >> choice)) {
+                std::cin.clear(); // Clear error state
+            }
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+            switch (choice) {
+                case 1: handleCreateNote(); break;
+                case 2: handleReadNotes(); break;
+                case 3: handleUpdateNote(); break;
+                case 4: handleDeleteNote(); break;
+                case 5: running = false; break;
+                default: std::cout << "Invalid choice. Try again.\n";
+            }
+        }
+    }
+
     void handleCreateNote() {
         std::string id, title, category, tagsInput, date, content;
 
@@ -29,15 +53,12 @@ public:
             if (!tag.empty()) tags.push_back(tag);
         }
 
-        manager.addNote(new TextNote(id, title, category, tags, date, content));
+        // Use std::make_unique to safely create and pass the pointer
+        manager.addNote(std::unique_ptr<TextNote>(new TextNote(id, title, category, tags, date, content)));
     }
 
-    // READ Handler
-    void handleReadNotes() {
-        manager.displayAllNotes();
-    }
+    void handleReadNotes() { manager.displayAllNotes(); }
 
-    // UPDATE Handler
     void handleUpdateNote() {
         std::string id, newTitle;
         std::cout << "Enter Note ID to Update: ";
@@ -52,7 +73,6 @@ public:
         }
     }
 
-    // DELETE Handler
     void handleDeleteNote() {
         std::string id;
         std::cout << "Enter ID of note to delete: ";
