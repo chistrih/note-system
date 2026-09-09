@@ -8,9 +8,13 @@ class NoteManager {
 private:
     // Upgraded to smart pointers for automatic memory safety
     std::vector<std::unique_ptr<Note>> notes;
+    int nextID = 1; // Track ID for auto-generation
 
 public:
-    // No manual destructor needed anymore!
+	// Generate ID and increments the counter
+	std::string generateNextID() {
+		return std::to_string(nextID++);
+	}
 
     void addNote(std::unique_ptr<Note> note) {
         notes.push_back(std::move(note));
@@ -38,6 +42,15 @@ public:
         Note* note = findNoteById(id);
         if (note != nullptr) {
             note->setTitle(newTitle);
+            return true;
+        }
+        return false;
+    }
+    
+    bool updateNoteContent(const std::string& id, const std::string& newContent) {
+        Note* note = findNoteById(id);
+        if (note != nullptr) {
+            note->setContent(newContent);
             return true;
         }
         return false;

@@ -4,8 +4,8 @@
 CPP      = g++.exe
 CC       = gcc.exe
 WINDRES  = windres.exe
-OBJ      = main.o Note.o NoteManager.o
-LINKOBJ  = main.o Note.o NoteManager.o
+OBJ      = main.o
+LINKOBJ  = main.o
 LIBS     = -L"D:/Apps/Dev-Cpp/MinGW64/lib" -L"D:/Apps/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc
 INCS     = -I"D:/Apps/Dev-Cpp/MinGW64/include" -I"D:/Apps/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"D:/Apps/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
 CXXINCS  = -I"D:/Apps/Dev-Cpp/MinGW64/include" -I"D:/Apps/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"D:/Apps/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"D:/Apps/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
@@ -26,9 +26,3 @@ $(BIN): $(OBJ)
 
 main.o: main.cpp
 	$(CPP) -c main.cpp -o main.o $(CXXFLAGS)
-
-Note.o: Note.cpp
-	$(CPP) -c Note.cpp -o Note.o $(CXXFLAGS)
-
-NoteManager.o: NoteManager.cpp
-	$(CPP) -c NoteManager.cpp -o NoteManager.o $(CXXFLAGS)

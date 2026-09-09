@@ -1,9 +1,10 @@
 #pragma once
 #include <iostream>
 #include <string>
-#include <vector>
-#include <sstream>
 #include <limits>
+#include <chrono>
+#include <ctime>
+#include <iomanip>
 #include "NoteManager.h"
 #include "TextNote.h"
 
@@ -21,7 +22,7 @@ public:
             
             int choice;
             if (!(std::cin >> choice)) {
-                std::cin.clear(); // Clear error state
+                std::cin.clear();
             }
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
@@ -37,24 +38,24 @@ public:
     }
 
     void handleCreateNote() {
-        std::string id, title, category, tagsInput, date, content;
+        std::string title, content;
 
-        std::cout << "Enter Note ID: "; std::getline(std::cin, id);
+        std::string id = manager.generateNextID();
+        std::cout << "Note #" << id << "\n";
+
         std::cout << "Enter Title: "; std::getline(std::cin, title);
-        std::cout << "Enter Category: "; std::getline(std::cin, category);
-        std::cout << "Enter Tags (comma-separated): "; std::getline(std::cin, tagsInput);
-        std::cout << "Enter Date (YYYY-MM-DD): "; std::getline(std::cin, date);
         std::cout << "Enter Text Content: "; std::getline(std::cin, content);
+        
+        // Auto-generate the local date and time
+        auto now = std::chrono::system_clock::now();
+        std::time_t now_time = std::chrono::system_clock::to_time_t(now);
+        std::tm* local_time = std::localtime(&now_time);
+        
+        char timeBuffer[80];
+        std::strftime(timeBuffer, sizeof(timeBuffer), "%Y-%m-%d %H:%M:%S", local_time);
+        std::string date(timeBuffer);
 
-        std::vector<std::string> tags;
-        std::stringstream ss(tagsInput);
-        std::string tag;
-        while (std::getline(ss, tag, ',')) {
-            if (!tag.empty()) tags.push_back(tag);
-        }
-
-        // Use std::make_unique to safely create and pass the pointer
-        manager.addNote(std::unique_ptr<TextNote>(new TextNote(id, title, category, tags, date, content)));
+        manager.addNote(std::unique_ptr<TextNote>(new TextNote(id, title, date, content)));
     }
 
     void handleReadNotes() { manager.displayAllNotes(); }
@@ -63,13 +64,41 @@ public:
         std::string id, newTitle;
         std::cout << "Enter Note ID to Update: ";
         std::getline(std::cin, id);
-        std::cout << "Enter New Title: ";
-        std::getline(std::cin, newTitle);
+        
+        std::cout << "1. Title\n";
+        std::cout << "2. Content\n";
+        std::cout << "Select an option: ";
+        
+        int choice;
+        if (!(std::cin >> choice)) {
+            std::cin.clear();
+        }
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-        if (manager.updateNoteTitle(id, newTitle)) {
-            std::cout << "Note title updated successfully!\n";
-        } else {
-            std::cout << "Note ID not found.\n";
+        if (choice == 1) {
+            std::string newTitle;
+            std::cout << "Enter New Title: ";
+            std::getline(std::cin, newTitle);
+            
+            if (manager.updateNoteTitle(id, newTitle)) {
+                std::cout << "Note title updated successfully!\n";
+            } else {
+                std::cout << "Note ID not found.\n";
+            }
+        } 
+        else if (choice == 2) {
+            std::string newContent;
+            std::cout << "Enter New Content: ";
+            std::getline(std::cin, newContent);
+            
+            if (manager.updateNoteContent(id, newContent)) {
+                std::cout << "Note content updated successfully!\n";
+            } else {
+                std::cout << "Note ID not found.\n";
+            }
+        } 
+        else {
+            std::cout << "Invalid choice. Returning to main menu.\n";
         }
     }
 
