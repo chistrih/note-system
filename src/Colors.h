@@ -9,4 +9,7 @@ namespace Color {
 	const std::string YELLOW = "\033[33m";
 	const std::string CYAN = "\033[96m";
 	const std::string MAGENTA = "\033[35m";
+	
+	const std::string DIM     = "\033[2m";
+	const std::string CLEAR   = "\033[2J\033[1;1H";
 }

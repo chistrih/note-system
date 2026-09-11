@@ -21,5 +21,5 @@ public:
     std::string getCreatedAt() const { return createdAt; }
 
     void setTitle(const std::string& newTitle) { title = newTitle; }
-    virtual void setContent(const std::string& newContent) = 0; 
+    virtual void setContent(const std::string& newContent) = 0;
 };

@@ -11,12 +11,13 @@ public:
         : Note(id, title, createdAt), textContent(content) {}
 
     void display() const override {
-        std::cout << "\n" << Color::CYAN << "========================================\n" << Color::RESET;
-        std::cout << "[Note #" << Color::CYAN << Color::BOLD << getId() << Color::RESET 
-					<< "]\nTitle: " << Color::CYAN << getTitle() << Color::RESET
-        			<< "\nDate: " << Color::CYAN << getCreatedAt() << Color::RESET << "\n";
-        std::cout << Color::CYAN << "----------------------------------------\n" << Color::RESET; 
-        std::cout << "\n" << textContent << "\n" << Color::CYAN << "\n========================================\n" << Color::RESET << "\n";
+        std::cout << "\n" << Color::MAGENTA << "========================================" << Color::RESET << "\n";
+        std::cout << "[Text Note] ID: " << Color::CYAN << Color::BOLD << getId() << Color::RESET 
+                  << "\nTitle: " << Color::CYAN << getTitle() << Color::RESET
+                  << "\nCreated: " << getCreatedAt() << "\n";
+        std::cout << Color::MAGENTA << "----------------------------------------" << Color::RESET << "\n";
+        std::cout << textContent << "\n";
+        std::cout << Color::MAGENTA << "========================================" << Color::RESET << "\n";
     }
 
     void setContent(const std::string& newContent) override { textContent = newContent; }
